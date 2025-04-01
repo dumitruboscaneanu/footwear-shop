@@ -1,4 +1,4 @@
-namespace ShoeShop.Api.Dtos
+namespace ShoeShop.BLogic.Dtos
 {
     public class AddProductRequest
     {

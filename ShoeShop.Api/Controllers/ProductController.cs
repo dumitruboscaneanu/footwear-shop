@@ -1,11 +1,19 @@
 using System.Web.Mvc;
-using ShoeShop.Api.Dtos;
-using ShoeShop.Data.Models;
+using ShoeShop.BLogic;
+using ShoeShop.BLogic.Dtos;
 
 namespace ShoeShop.Api.Controllers
 {
     public class ProductController : Controller
     {
+        
+        private readonly IProductService _productService;
+
+        public ProductController()
+        {
+            _productService = new ProductService();
+        }
+
 
         // For admin only in lab 5
         [HttpPost]
@@ -13,13 +21,7 @@ namespace ShoeShop.Api.Controllers
         {
             if (request.Name != null)
             {
-                var product = new Product
-                {
-                    Name = request.Name,
-                    Description = request.Description,
-                    Price = request.Price
-                };
-                // Save product to database
+                _productService.AddProduct(request);
             }
             
             return RedirectToAction("GetAllProducts", "Product");
@@ -27,8 +29,8 @@ namespace ShoeShop.Api.Controllers
         
         public ActionResult AddProduct()
         {
-            // in lab 4
-            return View();
+            var request = new AddProductRequest();
+            return View(request);
         }
         
         // admin only lab5
