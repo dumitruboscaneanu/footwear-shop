@@ -1,1 +1,0 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="ShoeShop.Api.MvcApplication" Language="C#" %>
