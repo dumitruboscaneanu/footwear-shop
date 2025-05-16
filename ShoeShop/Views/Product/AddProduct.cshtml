@@ -1,0 +1,19 @@
+@model ShoeShop.Dto.AddProductRequest
+
+<h2>AddProduct</h2>
+
+
+@using(Html.BeginForm("AddProduct", "Product", FormMethod.Post))
+{
+    <div>
+        @Html.TextBoxFor(m => m.Name)
+    </div>
+    <div>
+        @Html.TextAreaFor(m => m.Description)
+    </div>
+    <div>
+        @Html.TextBoxFor(m => m.Price)
+    </div>
+    <button type="submit">Add</button>
+}
+    

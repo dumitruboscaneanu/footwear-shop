@@ -1,0 +1,76 @@
+@model ShoeShop.Models.Product
+@{
+ViewBag.Title = "Edit Product";
+}
+
+<h1>Edit Product</h1>
+
+<div class="card">
+    <div class="card-body">
+        @using (Html.BeginForm())
+        {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+            @Html.ValidationMessageFor(m => m.Description)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Price)
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", type = "number", step = "0.01" })
+            @Html.ValidationMessageFor(m => m.Price)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Brand)
+            @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Brand)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Size)
+            @Html.TextBoxFor(m => m.Size, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Size)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Color)
+            @Html.TextBoxFor(m => m.Color, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Color)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Category)
+            @Html.TextBoxFor(m => m.Category, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Category)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ImageUrl)
+            @Html.TextBoxFor(m => m.ImageUrl, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ImageUrl)
+        </div>
+
+        <div class="form-group">
+            <label>
+                @Html.CheckBoxFor(m => m.InStock)
+                @Html.DisplayNameFor(m => m.InStock)
+            </label>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="@Url.Action("Products")" class="btn btn-primary">Cancel</a>
+        </div>
+        }
+    </div>
+</div>

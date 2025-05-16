@@ -1,0 +1,18 @@
+@model List<ShoeShop.Models.Product>
+@{
+ViewBag.Title = "GetProductsWithHidden";
+}
+
+<h2>GetAllProducts</h2>
+
+<div>
+    @foreach(var m in Model)
+    {
+    <div>
+        <img src="@m.ImageUrl" alt="Product Image" />
+        <h3>@m.Name</h3>
+        <p>@m.Description</p>
+        <p>@m.Price</p>
+    </div>
+    }
+</div>

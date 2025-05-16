@@ -1,0 +1,58 @@
+@model ShoeShop.Models.CartItem
+@{
+ViewBag.Title = "Checkout";
+}
+
+<h1>Checkout</h1>
+
+@if (Model == null)
+{
+<div class="card">
+    <div class="card-body">
+        <p>ERROR.</p>
+        <a href="@Url.Action("Products")" class="btn btn-primary">To Catalog</a>
+    </div>
+</div>
+}
+else
+{
+    <h2>Thanks!</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+        <td>
+            <div style="display: flex; align-items: center;">
+                <div style="width: 50px; height: 50px; margin-right: 10px;">
+                    <img src="@Model.ImageUrl" alt="@Model.ProductName" style="max-width: 100%; max-height: 100%;" />
+                </div>
+                <span>@Model.ProductName</span>
+            </div>
+        </td>
+        <td>@Model.Price.ToString("C")</td>
+        <td>@((Model.Price * Model.Quantity).ToString("C"))</td>
+        
+    </tr>
+
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+        <td><strong>@Model.Price</strong></td>
+        <td></td>
+    </tr>
+    </tfoot>
+</table>
+
+<div class="mt-3">
+    <a href="@Url.Action("Products")" class="btn btn-primary">Continue shopping</a>
+</div>
+}

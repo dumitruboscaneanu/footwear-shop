@@ -1,0 +1,33 @@
+@model List<ShoeShop.Models.Product>
+@{
+ViewBag.Title = "Catalog";
+}
+
+<h1>Catalog</h1>
+
+<div class="product-grid">
+    @foreach (var product in Model)
+    {
+    <div class="product-card">
+        <div class="product-image">
+            <img src="@product.ImageUrl" alt="@product.Name" style="max-width: 100%; max-height: 100%;" />
+        </div>
+        <div class="product-info">
+            <h3 class="product-title">@product.Name</h3>
+            <p>@product.Brand</p>
+            <p>Color: @product.Color</p>
+            <p>Size: @product.Size</p>
+            <p class="product-price">@product.Price.ToString("C")</p>
+            <div>
+                <a href="@Url.Action("ProductDetails", new { id = product.Id })" class="btn btn-primary">More</a>
+                @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
+                {
+                <input type="hidden" name="id" value="@product.Id" />
+                <input type="hidden" name="quantity" value="1" />
+                <button type="submit" class="btn btn-success">Add in cart</button>
+                }
+            </div>
+        </div>
+    </div>
+    }
+</div>

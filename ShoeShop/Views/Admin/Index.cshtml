@@ -1,0 +1,44 @@
+@{
+ViewBag.Title = "Admin panel";
+}
+
+<h1>Admin panel</h1>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>Management</h3>
+            </div>
+            <div class="card-body">
+                <p>Adding/Editing.</p>
+                <a href="@Url.Action("Products")" class="btn btn-primary">Go to</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>Shipping management</h3>
+            </div>
+            <div class="card-body">
+                <p>Show orders.</p>
+                <a href="#" class="btn btn-primary">Go to</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>User management</h3>
+            </div>
+            <div class="card-body">
+                
+                @using (Html.BeginForm("GetUsers", "Admin"))
+            {
+                <a class="btn btn-primary">Show users</a>
+            }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+@model List<ShoeShop.Models.Product>
+@{
+    ViewBag.Title = "GetAllProducts";
+}
+
+<h2>GetAllProducts</h2>
+
+<div>
+    @if (Model != null)
+    {
+        foreach (var m in Model)
+        {
+            <div>
+                <img src="@m.ImageUrl" alt="Product Image"/>
+                <h3>@m.Name</h3>
+                <p>@m.Description</p>
+                <p>@m.Price</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Products not found</p>
+    }
+</div>

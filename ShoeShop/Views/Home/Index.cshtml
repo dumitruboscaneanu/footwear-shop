@@ -1,0 +1,73 @@
+﻿@model List<ShoeShop.Models.Product>
+@{
+    ViewBag.Title = "Main Page";
+}
+
+<div class="text-center mb-3">
+    <h1>Welcome in ShoeShop</h1>
+    <p>Best Shoes</p>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h2>Popular</h2>
+    </div>
+    <div class="card-body">
+        <div class="product-grid">
+            @if (Model != null)
+            {
+                foreach (var product in Model)
+                {
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="@product.ImageUrl" alt="@product.Name" style="max-width: 100%; max-height: 100%;"/>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">@product.Name</h3>
+                            <p>@product.Brand</p>
+                            <p class="product-price">@product.Price.ToString("C")</p>
+                            <a href="@Url.Action("ProductDetails", new { id = product.Id })" class="btn btn-primary">More</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>Testestetste</h3>
+            </div>
+            <div class="card-body">
+                <p>wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>Best materials</h3>
+            </div>
+            <div class="card-body">
+                <p>wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h3>Shipping everywhere</h3>
+            </div>
+            <div class="card-body">
+                <p>wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="@Url.Action("Products")" class="btn btn-primary">Catalog</a>
+</div>
