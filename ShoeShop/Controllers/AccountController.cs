@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using ShoeShop.Dto;
 using ShoeShop.Models;
+using ShoeShop.Services;
 
 namespace ShoeShop.Controllers
 {
@@ -12,11 +13,11 @@ namespace ShoeShop.Controllers
 
     public class AccountController : Controller
     {
-        private readonly ShoeShopDbContext _context;
+        private readonly IService _service;
         
         public AccountController()
         {
-            _context = new ShoeShopDbContext();
+            _service = new ServiceHandler();
         }
         
         public ActionResult Login()
@@ -30,7 +31,7 @@ namespace ShoeShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+                var user = _service.VerifyUser(model.Email, model.Password);
                 if (user != null)
                 {
                     var authTicket = new FormsAuthenticationTicket(
@@ -67,28 +68,21 @@ namespace ShoeShop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
+            
+            var newUser = new Person
             {
-                if (_context.Users.Any(u => u.Email == model.Email))
-                {
-                    ModelState.AddModelError("Email", "Email used");
-                    return View(model);
-                }
-
-                var newUser = new Person
-                {
-                    Id = Guid.NewGuid(),
-                    Name = model.Username,
-                    Email = model.Email,
-                    Password = model.Password,
-                    IsAdmin = false
-                };
-                
-                _context.Users.Add(newUser);
-                _context.SaveChanges();
-                FormsAuthentication.SetAuthCookie(newUser.Name, false);
-                return RedirectToAction("Index", "Home");
-            }
+                Id = Guid.NewGuid(),
+                Name = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                IsAdmin = false
+            };
+            
+            _service.Register(newUser);
+            
+            FormsAuthentication.SetAuthCookie(newUser.Name, false);
+            return RedirectToAction("Index", "Home");
+            
             return View(model);
         }
 

@@ -2,16 +2,18 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using ShoeShop.Models;
+using ShoeShop.Services;
 
 namespace ShoeShop.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly ShoeShopDbContext _context;
 
+        private readonly IService _service;
+        
         public AdminController()
         {
-            _context = new ShoeShopDbContext();
+            _service = new ServiceHandler();
         }
     
          public ActionResult Index()
@@ -21,7 +23,7 @@ namespace ShoeShop.Controllers
 
         public ActionResult Products()
         {
-            return View(_context.Products.ToList());
+            return View(_service.GetAllProducts());
         }
 
         public ActionResult AddProduct()
@@ -33,16 +35,14 @@ namespace ShoeShop.Controllers
         public ActionResult AddProduct(Product product)
         {
             
-            product.Id = Guid.NewGuid();
-            _context.Products.Add(product);
-            _context.SaveChanges();
+            _service.AddProduct(product);
             return RedirectToAction("Products");
             
         }
 
         public ActionResult EditProduct(Guid id)
         {   
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            var product = _service.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -54,23 +54,7 @@ namespace ShoeShop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditProduct(Product product)
         {
-            if (ModelState.IsValid)
-            {
-                var existingProduct = _context.Products.FirstOrDefault(p => p.Id == product.Id);
-                if (existingProduct != null)
-                {
-                    existingProduct.Name = product.Name;
-                    existingProduct.Description = product.Description;
-                    existingProduct.Price = product.Price;
-                    existingProduct.Brand = product.Brand;
-                    existingProduct.Size = product.Size;
-                    existingProduct.Color = product.Color;
-                    existingProduct.ImageUrl = product.ImageUrl;
-                    existingProduct.InStock = product.InStock;
-                    existingProduct.Category = product.Category;
-                }
-                return RedirectToAction("Products");
-            }
+            _service.UpdateProduct(product);
             return View(product);
         }
 
@@ -78,18 +62,13 @@ namespace ShoeShop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteProduct(Guid id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                _context.SaveChanges();
-            }
+            _service.DeleteProduct(id);
             return RedirectToAction("Products");
         }
         
         public ActionResult GetUsers()
         {
-            var users = _context.Users.ToList();
+            var users = _service.GetUsers();
             return View(users);
         }
         

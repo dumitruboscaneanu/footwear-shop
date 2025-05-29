@@ -4,17 +4,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ShoeShop.Models;
+using ShoeShop.Services;
 
 namespace ShoeShop.Controllers
 {
     public class HomeController : Controller
     {
-        
-        private readonly ShoeShopDbContext _context;
+        private readonly IService _service;
 
         public HomeController()
         {
-            _context = new ShoeShopDbContext();
+            _service = new ServiceHandler();
         }
         
 
@@ -32,18 +32,18 @@ namespace ShoeShop.Controllers
         
         public ActionResult Index()
         {
-            var featuredProducts = _context.Products.Take(3).ToList();
-            return View(featuredProducts);
+            var products = _service.GetIndex();
+            return View(products);
         }
 
         public ActionResult Products()
         {
-            return View(_context.Products.ToList());
+            return View(_service.GetAllProducts());
         }
 
         public ActionResult ProductDetails(Guid id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            var product = _service.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -53,77 +53,27 @@ namespace ShoeShop.Controllers
 
         public ActionResult Cart()
         {
-            var cart = _context.Carts.FirstOrDefault(x => x.UserName == User.Identity.Name);
+            var cart = _service.GetCart(User.Identity.Name);
             return View(cart);
         }
 
         [HttpPost]
         public ActionResult AddToCart(Guid id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            
-            var cartItem = new CartItem
-            {
-                Id = Guid.NewGuid(),
-                UserName = User.Identity.Name,
-                ProductName = product.Name,
-                Price = product.Price,
-                ProductId = product.Id,
-                Quantity = 1,
-                ImageUrl = product.ImageUrl
-            };
-
-            _context.Carts.Add(cartItem);
-            _context.SaveChanges();            
+            _service.AddToCart(id, User.Identity.Name);
             return RedirectToAction("Cart");
         }
 
         [HttpPost]
         public ActionResult RemoveFromCart(Guid id)
         {
-            var cartItem = _context.Carts.FirstOrDefault(c => c.Id == id);
-            if (cartItem != null)
-            {
-                _context.Carts.Remove(cartItem);
-                _context.SaveChanges();
-            }
+            _service.RemoveFromCart(id, User.Identity.Name);
             return RedirectToAction("Cart");
         }
-
-        [HttpPost]
-        public ActionResult UpdateCart(Guid id, int quantity)
-        {
-            var cartItem = _context.Carts.FirstOrDefault(c => c.Id == id);
-            if (cartItem != null)
-            {
-                if (quantity <= 0)
-                {
-                    _context.Carts.Remove(cartItem);
-                }
-                else
-                {
-                    cartItem.Quantity = quantity;
-                }
-            }
-            return RedirectToAction("Cart");
-        }
-        
-        
         
         public ActionResult Checkout()
         {
-            var cart = _context.Carts.FirstOrDefault(x => x.UserName == User.Identity.Name);
-            if (cart == null)
-            {
-                return HttpNotFound();
-            }
-
-            _context.Carts.Remove(cart);
-            _context.SaveChanges();
+            var cart = _service.Checkout(User.Identity.Name);
             
             return View(cart);
         }

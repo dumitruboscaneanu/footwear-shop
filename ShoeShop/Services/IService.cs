@@ -12,19 +12,107 @@ namespace ShoeShop.Services
         void AddProduct(Product product);
         void UpdateProduct(Product product);
         void DeleteProduct(Guid id);
-        
+        List<Product> GetIndex();
+        CartItem GetCart(string userName);
+        void AddToCart(Guid id, string name);
+        void RemoveFromCart(Guid id, string name);
+        CartItem Checkout(string userName);
+        List<Person> GetUsers();
+        Person VerifyUser(string email, string password);
+        void Register(Person user);
+
     }
     
     public class ServiceHandler : IService
     {
         private readonly ShoeShopDbContext _context;
         
-        public ServiceHandler(ShoeShopDbContext context)
+        public ServiceHandler()
         {
-            _context = context;
+            _context = new ShoeShopDbContext();
+        }
+        
+        public Person VerifyUser(string email, string password)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+            return user;
+        }
+        
+        public void Register(Person user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (existingUser != null)
+            {
+                throw new InvalidOperationException("User already exists.");
+            }
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
+        
+        public CartItem Checkout(string userName)
+        {
+            var cart = _context.Carts.FirstOrDefault(x => x.UserName == userName);
+
+            _context.Carts.Remove(cart);
+            _context.SaveChanges();
+
+            return cart;
+        }
+        
+        public List<Person> GetUsers()
+        {
+            var users = _context.Users.ToList();
+            return users;
+        }
+        
+        public void AddToCart(Guid id, string name)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            
+            var cartItem = new CartItem
+            {
+                Id = Guid.NewGuid(),
+                UserName = name,
+                ProductName = product.Name,
+                Price = product.Price,
+                ProductId = product.Id,
+                Quantity = 1,
+                ImageUrl = product.ImageUrl
+            };
+
+            _context.Carts.Add(cartItem);
+            _context.SaveChanges();            
         }
 
+        public void RemoveFromCart(Guid id, string name)
+        {
+            var cartItem = _context.Carts.FirstOrDefault(c => c.Id == id && c.UserName == name);
+            if (cartItem != null)
+            {
+                _context.Carts.Remove(cartItem);
+                _context.SaveChanges();
+            }
+        }
 
+        public List<Product> GetIndex()
+        {
+            var products = _context.Products.Take(3).ToList();
+            return products;
+        }
+        
+        public CartItem GetCart(string userName)
+        { 
+            var cartItems = _context.Carts.FirstOrDefault(x => x.UserName == userName);
+            return cartItems;
+        }
+        
+        
         public List<Product> GetAllProducts()
         {
             var products = _context.Products.ToList();
